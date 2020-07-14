@@ -30,7 +30,7 @@ while True:
             distance= float(dist.decode('utf-8'))
         except:
             distance = 100
-        while distance <=85 and distance>=1:
+        if distance <=85 and distance>=1:
             time.sleep(0.2)
             try:
                 done= cache_dat.get('end_cycle')
@@ -62,7 +62,7 @@ while True:
                 time.sleep(1)
                 break
 
-            elif yforehead == float(99999):
+            if yforehead == float(99999):
                 time.sleep(0.5)
                 print ('subject gone missing')
                 print ('anglenow is '+ str(anglenow) + ' degree')
@@ -73,23 +73,39 @@ while True:
                 time.sleep(1)
                 break
 
-            elif distance >85:
+            if distance >85:
                 print('subject is out of range (subject >85)')
                 break
             elif distance<1:
                 print('subject is out of range (subject <1)')
                 break
 
-            elif overlap == 'True':
-                print('currently overlapping, sleep every 0.5s')
-                time.sleep(0.5)
-            
-            elif finished == 'False':
+            if overlap == 'True':
+                while finished == 'False' and yforehead != float(99999) and distance < 85:
+                    print('overlap udah True tapi finished masi false, waiting for the iteration to be completed')
+                    time.sleep(0.5)
+                    done= cache_dat.get('end_cycle')
+                    finished = str(done.decode('utf-8'))
+                    yfhd= cache_dat.get('y_forehead')
+                    yforehead= float(yfhd.decode('utf-8'))
+                    dist= cache_dat.get('distance')  #to update the current distance inside this while loop
+                    distance= float(dist.decode('utf-8'))
+                    print('finish state'+finished)
+                    print('y forehead state'+ str(y_forehead))
+                    print('current distance' + str(distance))
+
+
+                while finished == 'True' or yforehead == float(99999) or distance >85:
+                    break
+                else:
+                    break
+
+            if finished == 'False' and overlap == 'False':
                 #setting up cache to be used by others
                 cache_dat.set('servo_running','False')
                 #math to find the value of the angle that's going to be put in
                 angle = float(math.degrees(math.atan((dynamicfhd-yforehead)/800*130.8/distance))) #still pixel/centimeter
-                angleout = angle *1.1 #bisa kasih magic number
+                angleout = angle *1.3 #bisa kasih magic number
                 total = anglenow+angleout 
                 try:
                     total >180 and total <0
@@ -108,6 +124,7 @@ while True:
                 print ("(4) change in angle is at " + str(angle))
                 print ("(5) change in angle output to servo is at " + str(angleout))
                 anglenow,anglenowp= servo.converter(angleout)   
+
                 time.sleep(0.01)
 
         if distance >85:

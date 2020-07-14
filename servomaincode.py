@@ -35,7 +35,7 @@ class servo_:
         if -1.5<self.dpixels<1.5:
             time.sleep(0.01)
             print("currently it's at "+ str(float(self.angle0p))+"degree, nothing changed")
-            pass
+            time.sleep(0.25)
         else:
             self.angle = self.angle + self.dpixels
             self.angle0p =  self.angle0p - self.dpixels
@@ -59,7 +59,7 @@ class servo_:
         elif self.angle0 < 89.5:  
         #self.angle = self.angle0 + self.angle
         
-            for t in range (int(self.angle0*self.norm),90*self.norm,4):
+            for t in range (int(self.angle0*self.norm),90*self.norm,5):
                 self.kit.servo[15].angle = t/self.norm
                 time.sleep (self.ts)
             print('return to 90 naik from the angle '+ str(self.angle0))
@@ -67,7 +67,7 @@ class servo_:
             self.angle0p= 90
             return(self.angle0)
         elif self.angle0 > 90.5:
-            for t in range (int(self.angle0*self.norm),90*self.norm,-4):
+            for t in range (int(self.angle0*self.norm),90*self.norm,-5):
                 self.kit.servo[15].angle = t/self.norm
                 time.sleep (self.ts)
             print('return to 90 turun from the angle '+ str(self.angle0))
@@ -82,128 +82,131 @@ class servo_:
         if overlap == 'False':
 
             if self.angle0 < self.angle:
-                while self.n<15:
-                    while self.n <5:
-                        self.m+=1
-                        for t in range (int((self.angle0+self.deltaangle*self.n/15)*self.norm),int((self.angle0+self.deltaangle*(self.n+2)/15)*self.norm),self.m):
-                            self.kit.servo[15].angle = t/self.norm
-                            try:
-                                ovrlp = cache_dat.get('y_overlap')
-                                overlap = str(ovrlp.decode('utf-8'))
-                            except:
-                                overlap == 'False'
+                #while self.n<15:
+                while self.n <5 and overlap == 'False':
+                    self.m+=1
+                    for t in range (int((self.angle0+self.deltaangle*self.n/15)*self.norm),int((self.angle0+self.deltaangle*(self.n+2)/15)*self.norm),self.m):
+                        self.kit.servo[15].angle = t/self.norm
+                        try:
+                            ovrlp = cache_dat.get('y_overlap')
+                            overlap = str(ovrlp.decode('utf-8'))
+                        except:
+                            overlap == 'False'
 
-                            if overlap == 'True':
-                                time.sleep(0.01)
-                                print('break overlap inside servo.py1')
-                                time.sleep(0.5)
-                                break
-                            else:
-                                time.sleep (self.ts)
-                        self.n+=1
+                        if overlap == 'True':
+                            time.sleep(0.01)
+                            print('break overlap inside servo.py1')
+                            time.sleep(0.5)
+                            break
+                        else:
+                            time.sleep (self.ts)
+                    self.n+=1
                         
-                    while self.n>=5 and self.n<10:
-                        for t in range (int((self.angle0+self.deltaangle*self.n/15)*self.norm),int((self.angle0+self.deltaangle*(self.n+1)/15)*self.norm),self.m):
-                            try:
-                                ovrlp = cache_dat.get('y_overlap')
-                                overlap = str(ovrlp.decode('utf-8'))
-                            except:
-                                overlap == 'False'
-                            
-                            self.kit.servo[15].angle = t/self.norm
-    
-                            if overlap == 'True':
-                                time.sleep(0.01)
-                                print('break overlap inside servo.py2')
-                                time.sleep(0.5)
-                                break
-                            else:
-                                time.sleep (self.ts)
-                        self.n+=1
-                        self.m-=1
+                while self.n>=5 and self.n<10 and overlap == 'False':
+                    for t in range (int((self.angle0+self.deltaangle*self.n/15)*self.norm),int((self.angle0+self.deltaangle*(self.n+1)/15)*self.norm),self.m):
+                        try:
+                            ovrlp = cache_dat.get('y_overlap')
+                            overlap = str(ovrlp.decode('utf-8'))
+                        except:
+                            overlap == 'False'
+                        
+                        self.kit.servo[15].angle = t/self.norm
 
-                    while self.n>=10 and self.n<15:
-                        self.m=1
-                        for t in range (int((self.angle0+self.deltaangle*self.n/15)*self.norm),int((self.angle0+self.deltaangle*(self.n+1)/15)*self.norm),self.m):
-                            try:
-                                ovrlp = cache_dat.get('y_overlap')
-                                overlap = str(ovrlp.decode('utf-8'))
-                            except:
-                                overlap == 'False'
-                            
-                            self.kit.servo[15].angle = t/self.norm
-    
-                            if overlap == 'True':
-                                time.sleep(0.01)
-                                print('break overlap inside servo.py3')
-                                time.sleep(0.5)
-                                break
-                            else:
-                                time.sleep (self.ts)
-                        self.n+=1
+                        if overlap == 'True':
+                            time.sleep(0.01)
+                            print('break overlap inside servo.py2')
+                            time.sleep(0.5)
+                            break
+                        else:
+                            time.sleep (self.ts)
+                    self.n+=1
+                    self.m-=1
+
+                while self.n>=10 and self.n<15 and overlap == 'False':
+                    self.m=1
+                    for t in range (int((self.angle0+self.deltaangle*self.n/15)*self.norm),int((self.angle0+self.deltaangle*(self.n+1)/15)*self.norm),self.m):
+                        try:
+                            ovrlp = cache_dat.get('y_overlap')
+                            overlap = str(ovrlp.decode('utf-8'))
+                        except:
+                            overlap == 'False'
+                        
+                        self.kit.servo[15].angle = t/self.norm
+
+                        if overlap == 'True':
+                            time.sleep(0.01)
+                            print('break overlap inside servo.py3')
+                            time.sleep(0.5)
+                            break
+                        else:
+                            time.sleep (self.ts)
+                    self.n+=1
+                else:
+                    print('else pass sir 1')
+                    pass
 
             elif self.angle0 > self.angle:  
-                while self.n<15:
-                    while self.n <5:
-                        self.m+=1
-                        for t in range (int((self.angle0+self.deltaangle*self.n/15)*self.norm),int((self.angle0+self.deltaangle*(self.n+1)/15)*self.norm),-self.m):
-                            self.kit.servo[15].angle = t/self.norm
-                            try:
-                                ovrlp = cache_dat.get('y_overlap')
-                                overlap = str(ovrlp.decode('utf-8'))
-                            except:
-                                overlap == 'False'
+                #while self.n<15:
+                while self.n <5 and overlap == 'False':
+                    self.m+=1
+                    for t in range (int((self.angle0+self.deltaangle*self.n/15)*self.norm),int((self.angle0+self.deltaangle*(self.n+1)/15)*self.norm),-self.m):
+                        self.kit.servo[15].angle = t/self.norm
+                        try:
+                            ovrlp = cache_dat.get('y_overlap')
+                            overlap = str(ovrlp.decode('utf-8'))
+                        except:
+                            overlap == 'False'
 
-                            if overlap == 'True':
-                                time.sleep(0.01)
-                                print('break overlap inside servo.py4')
-                                time.sleep(0.5)
-                                break
-                            else:
-                                time.sleep (self.ts)
-                        self.n+=1
+                        if overlap == 'True':
+                            time.sleep(0.01)
+                            print('break overlap inside servo.py4')
+                            time.sleep(0.5)
+                            break
+                        else:
+                            time.sleep (self.ts)
+                    self.n+=1
+        
+                while self.n>=5 and self.n<10 and overlap == 'False':
+                    for t in range (int((self.angle0+self.deltaangle*self.n/15)*self.norm),int((self.angle0+self.deltaangle*(self.n+1)/15)*self.norm),-self.m):
+                        self.kit.servo[15].angle = t/self.norm
+                        try:
+                            ovrlp = cache_dat.get('y_overlap')
+                            overlap = str(ovrlp.decode('utf-8'))
+                        except:
+                            overlap == 'False'
+
+                        if overlap == 'True':
+                            time.sleep(0.01)
+                            print('break overlap inside servo.py5')
+                            time.sleep(0.5)
+                            break
+                        else:
+                            time.sleep (self.ts)
+                    self.n+=1
+                    self.m-=1
             
-                    while self.n>=5 and self.n<10:
-                        for t in range (int((self.angle0+self.deltaangle*self.n/15)*self.norm),int((self.angle0+self.deltaangle*(self.n+1)/15)*self.norm),-self.m):
-                            self.kit.servo[15].angle = t/self.norm
-                            try:
-                                ovrlp = cache_dat.get('y_overlap')
-                                overlap = str(ovrlp.decode('utf-8'))
-                            except:
-                                overlap == 'False'
+                while self.n>=10 and self.n<15 and overlap == 'False':
+                    self.m=1
+                    for t in range (int((self.angle0+self.deltaangle*self.n/15)*self.norm),int((self.angle0+self.deltaangle*(self.n+1)/15)*self.norm),-self.m):
+                        try:
+                            ovrlp = cache_dat.get('y_overlap')
+                            overlap = str(ovrlp.decode('utf-8'))
+                        except:
+                            overlap == 'False'
+                        
+                        self.kit.servo[15].angle = t/self.norm
 
-                            if overlap == 'True':
-                                time.sleep(0.01)
-                                print('break overlap inside servo.py5')
-                                time.sleep(0.5)
-                                break
-                            else:
-                                time.sleep (self.ts)
-                        self.n+=1
-                        self.m-=1
-                
-                    while self.n>=10 and self.n<15:
-                        self.m=1
-                        for t in range (int((self.angle0+self.deltaangle*self.n/15)*self.norm),int((self.angle0+self.deltaangle*(self.n+1)/15)*self.norm),-self.m):
-                            try:
-                                ovrlp = cache_dat.get('y_overlap')
-                                overlap = str(ovrlp.decode('utf-8'))
-                            except:
-                                overlap == 'False'
-                            
-                            self.kit.servo[15].angle = t/self.norm
-    
-                            if overlap == 'True':
-                                time.sleep(0.01)
-                                print('break overlap inside servo.py6')
-                                time.sleep(0.5)
-                                break
-                            else:
-                                time.sleep (self.ts)
-                        self.n+=1
-                    
-
-            print('apa aja boleh')
+                        if overlap == 'True':
+                            time.sleep(0.01)
+                            print('break overlap inside servo.py6')
+                            time.sleep(0.5)
+                            break
+                        else:
+                            time.sleep (self.ts)
+                    self.n+=1
+                else:
+                    print('else pass sir 2')
+                    pass
             self.n=0
             self.m=0
             self.angle0 = (t/self.norm)
